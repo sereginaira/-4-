@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 IRREGULAR VERBS • 5 ИГР • кроссворд • мемори • шарики • карточки</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #101f2e 0%, #1d3347 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .grand-container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(0, 15, 25, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 3.5rem;
+            padding: 2.2rem 1.8rem;
+            border: 3px solid #f3c26b;
+            box-shadow: 0 30px 40px #000000cc;
+        }
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            color: #fad15e;
+            text-shadow: 0 6px 0 #7b5422, 0 12px 18px black;
+            letter-spacing: 3px;
+        }
+        .subhead {
+            text-align: center;
+            color: #c0ddfa;
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+        }
+        .tab-strip {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.6rem 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+        .tab-btn {
+            background: #264a60;
+            border: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            color: #e8f0ff;
+            cursor: pointer;
+            border: 2px solid #b3974b;
+            box-shadow: 0 5px 0 #12303e;
+            transition: 0.1s;
+        }
+        .tab-btn.active {
+            background: #f1bc44;
+            color: #1c2d3a;
+            border-color: #ffdfa0;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 #956f27;
+        }
+        .panel {
+            display: none;
+            animation: 0.2s fade;
+        }
+        .panel.active-panel { display: block; }
+        @keyframes fade { from { opacity:0.2; } to { opacity:1; } }
+        .game-box {
+            background: #1e2f3fd4;
+            border-radius: 2.5rem;
+            padding: 2rem 1.8rem;
+            border: 3px solid #f3ba4f;
+        }
+
+        /* ---------- КРОССВОРД (полное поле + подсветка) ---------- */
+        .cross-outer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .cross-grid {
+            display: grid;
+            grid-template-columns: repeat(15, 44px);
+            gap: 3px;
+            background: #173144;
+            padding: 12px;
+            border-radius: 30px;
+        }
+        .cross-cell {
+            width: 44px;
+            height: 44px;
+            background: #2a4055;
+            border: 2px solid #ccaa5e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffefc0;
+            text-transform: uppercase;
+            border-radius: 10px;
+            user-select: none;
+        }
+        .cross-cell.highlight {
+            background: #6fa53f;
+            border-color: #ffffaa;
+            color: #1f3310;
+            box-shadow: 0 0 15px #ccff99;
+        }
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem 1.5rem;
+            justify-content: center;
+            margin: 2rem 0 1rem;
+            background: #1f374b;
+            padding: 1.5rem;
+            border-radius: 50px;
+        }
+        .word-token {
+            background: #2e506a;
+            padding: 0.5rem 1.8rem;
+            border-radius: 40px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #fbddab;
+            border: 2px solid #f5b951;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .word-token.found {
+            background: #417b4b;
+            color: #dcffd0;
+            text-decoration: line-through 2px #baff9a;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        /* ---------- МЕМОРИ 3 РАУНДА ---------- */
+        .memory-round-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .round-btn {
+            background: #32576e;
+            border: none;
+            padding: 0.6rem 2rem;
+            font-size: 1.5rem;
+            border-radius: 40px;
+            color: #fad98b;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid #cba155;
+        }
+        .round-btn.active-round {
+            background: #edb94a;
+            color: #172c38;
+        }
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.8rem;
+        }
+        .memory-card {
+            background: #1d3a4f;
+            border: 3px solid #d6a94c;
+            border-radius: 24px;
+            aspect-ratio: 1 / 0.9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fbdfb5;
+            text-align: center;
+            padding: 0.4rem;
+            box-shadow: 0 7px 0 #0a1f2c;
+            cursor: pointer;
+        }
+        .memory-card.matched {
+            background: #3f7a4d;
+            border-color: #c0ffa0;
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 #23532d;
+            pointer-events: none;
+        }
+        .memory-card.flipped {
+            background: #4f7895;
+            border-color: #ffde9e;
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 #244c66;
+        }
+        .memory-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #f7cf8b;
+            font-size: 1.5rem;
+            margin: 1rem 0 0.5rem;
+        }
+
+        /* ---------- ШАРИКИ (без лишнего текста) ---------- */
+        .balloon-header {
+            font-size: 2.5rem;
+            color: #ffd78a;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .balloon-field {
+            background: #0e2638;
+            border-radius: 50px;
+            padding: 2rem 1rem;
+            min-height: 270px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 1.2rem;
+        }
+        .balloon {
+            background: #ce4b4b;
+            width: 110px;
+            height: 140px;
+            border-radius: 50% 50% 40% 40%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 0 black;
+            box-shadow: 0 10px 0 #792e2e, 0 15px 15px black;
+            animation: float 2s infinite alternate;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1.2;
+        }
+        .balloon:after {
+            content: '';
+            position: absolute;
+            bottom: -18px;
+            width: 3px;
+            height: 40px;
+            background: #a1a1a1;
+            left: 50%;
+        }
+        @keyframes float { from { transform: translateY(0); } to { transform: translateY(-12px); } }
+        .balloon.correct-hit {
+            background: #429442;
+            box-shadow: 0 10px 0 #235f23;
+        }
+        .balloon.wrong-hit {
+            background: #5e5e5e;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* ---------- КАРТОЧКИ (flashcard) ---------- */
+        .flash-card {
+            background: #1f3f59;
+            border-radius: 70px;
+            padding: 3rem;
+            border: 6px solid #fbc85a;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .flash-v1 {
+            font-size: 5rem;
+            font-weight: 800;
+            color: #ffeeaa;
+            text-shadow: 0 4px 0 #8a601f;
+        }
+        .flash-trans {
+            font-size: 2rem;
+            color: #badcff;
+        }
+        .flash-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .flash-opt {
+            background: #244c64;
+            border: 4px solid #f5bd50;
+            border-radius: 60px;
+            padding: 1rem 2.8rem;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fbeac2;
+            cursor: pointer;
+            transition: 0.1s;
+            min-width: 200px;
+            text-align: center;
+        }
+        .flash-opt:hover { background: #3f6b89; }
+        .flash-opt.correct-answer { background: #3fa54f; border-color: #ccffaa; }
+        .reset-mini {
+            background: #956f2e;
+            border: none;
+            border-radius: 40px;
+            padding: 0.8rem 2.2rem;
+            font-size: 1.4rem;
+            color: white;
+            font-weight: 600;
+            margin-top: 1.8rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="grand-container">
+    <h1>⚡ IRREGULAR · ARENA ⚡</h1>
+    <div class="subhead">✦ crossword · 3-round memory · 🎈 balloons · 🃏 flashcards</div>
+
+    <div class="tab-strip">
+        <button class="tab-btn active" data-panel="cross">✦ КРОССВОРД</button>
+        <button class="tab-btn" data-panel="memory">🧠 МЕМОРИ (3 раунда)</button>
+        <button class="tab-btn" data-panel="balloon">🎈 ШАРИКИ</button>
+        <button class="tab-btn" data-panel="flash">🃏 КАРТОЧКИ</button>
+    </div>
+
+    <!-- КРОССВОРД (все поле заполнено буквами) -->
+    <div id="cross-panel" class="panel active-panel">
+        <div class="game-box">
+            <div class="cross-outer">
+                <div id="crossGrid" class="cross-grid"></div>
+                <div id="wordBank" class="word-bank"></div>
+                <button id="crossReset" class="reset-mini">🔄 новый кроссворд</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МЕМОРИ (3 раунда) -->
+    <div id="memory-panel" class="panel">
+        <div class="game-box">
+            <div class="memory-round-tabs">
+                <button class="round-btn active-round" data-round="0">🔹 РАУНД 1</button>
+                <button class="round-btn" data-round="1">🔸 РАУНД 2</button>
+                <button class="round-btn" data-round="2">🔹 РАУНД 3</button>
+            </div>
+            <div class="memory-stats"><span>🧩 пары: <span id="memoryPairs">0</span>/10</span><span>↻ ходы: <span id="memoryMoves">0</span></span></div>
+            <div id="memoryGrid" class="memory-grid"></div>
+            <div style="text-align: center;"><button id="memoryResetRound" class="reset-mini">🔄 заново раунд</button></div>
+        </div>
+    </div>
+
+    <!-- ШАРИКИ (без подсказки was/were) -->
+    <div id="balloon-panel" class="panel">
+        <div class="game-box">
+            <div class="balloon-header">🎈 <span id="balloonCurrentV1">be</span></div>
+            <div id="balloonField" class="balloon-field"></div>
+            <div style="display: flex; justify-content: space-between; margin-top: 1.5rem;">
+                <span style="color:#fcdb9f; font-size: 2rem;" id="balloonScore">🎯 0</span>
+                <button id="balloonNextVerb" class="reset-mini">🎈 следующий</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- КАРТОЧКИ (flashcards) -->
+    <div id="flash-panel" class="panel">
+        <div class="game-box">
+            <div class="flash-card">
+                <div class="flash-v1" id="flashV1">begin</div>
+                <div class="flash-trans" id="flashTrans">начинать</div>
+            </div>
+            <div class="flash-options" id="flashOptions"></div>
+            <div style="text-align: center;"><button id="flashNext" class="reset-mini">⏩ следующий</button></div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // ==================== БАЗА ====================
+    const verbs = [
+        { v1: "be", v2: "was/were", v3: "been", trans: "быть" },
+        { v1: "become", v2: "became", v3: "become", trans: "становиться" },
+        { v1: "bear", v2: "bore", v3: "born/borne", trans: "переносить" },
+        { v1: "beat", v2: "beat", v3: "beaten/beat", trans: "бить" },
+        { v1: "begin", v2: "began", v3: "begun", trans: "начинать" },
+        { v1: "bite", v2: "bit", v3: "bit/bitten", trans: "кусать" },
+        { v1: "break", v2: "broke", v3: "broken", trans: "ломать" },
+        { v1: "bring", v2: "brought", v3: "brought", trans: "приносить" },
+        { v1: "build", v2: "built", v3: "built", trans: "строить" },
+        { v1: "burn", v2: "burnt", v3: "burnt", trans: "жечь" },
+        { v1: "buy", v2: "bought", v3: "bought", trans: "покупать" },
+        { v1: "can", v2: "could", v3: "—", trans: "мочь" },
+        { v1: "catch", v2: "caught", v3: "caught", trans: "ловить" },
+        { v1: "choose", v2: "chose", v3: "chosen", trans: "выбирать" },
+        { v1: "come", v2: "came", v3: "come", trans: "приходить" },
+        { v1: "cost", v2: "cost", v3: "cost", trans: "стоить" },
+        { v1: "cut", v2: "cut", v3: "cut", trans: "резать" },
+        { v1: "do", v2: "did", v3: "done", trans: "делать" },
+        { v1: "draw", v2: "drew", v3: "drawn", trans: "рисовать" },
+        { v1: "dream", v2: "dreamed", v3: "dreamt", trans: "мечтать" },
+        { v1: "drink", v2: "drank", v3: "drunk", trans: "пить" },
+        { v1: "drive", v2: "drove", v3: "driven", trans: "ехать" },
+        { v1: "eat", v2: "ate", v3: "eaten", trans: "есть" },
+        { v1: "fall", v2: "fell", v3: "fallen", trans: "падать" },
+        { v1: "feel", v2: "felt", v3: "felt", trans: "чувствовать" },
+        { v1: "fight", v2: "fought", v3: "fought", trans: "сражаться" },
+        { v1: "find", v2: "found", v3: "found", trans: "находить" },
+        { v1: "fly", v2: "flew", v3: "flown", trans: "летать" },
+        { v1: "forget", v2: "forgot", v3: "forgotten", trans: "забывать" },
+        { v1: "forgive", v2: "forgave", v3: "forgiven", trans: "прощать" }
+    ];
+
+    // ---------- КРОССВОРД (полное поле букв, спрятаны слова) ----------
+    const crossWords = verbs.slice(0, 15).map(v => v.v1.toLowerCase());
+    function generateFullCrossword() {
+        const size = 15;
+        let grid = Array(size).fill().map(() => Array(size).fill(''));
+        // сначала размещаем слова
+        crossWords.forEach((word, idx) => {
+            let placed = false;
+            let attempts = 0;
+            while (!placed && attempts < 1000) {
+                const direction = Math.random() < 0.5 ? 'across' : 'down';
+                const row = Math.floor(Math.random() * size);
+                const col = Math.floor(Math.random() * size);
+                if (direction === 'across' && col + word.length <= size) {
+                    let ok = true;
+                    for (let i = 0; i < word.length; i++) {
+                        if (grid[row][col+i] !== '' && grid[row][col+i] !== word[i]) { ok = false; break; }
+                    }
+                    if (ok) {
+                        for (let i = 0; i < word.length; i++) grid[row][col+i] = word[i];
+                        placed = true;
+                    }
+                } else if (direction === 'down' && row + word.length <= size) {
+                    let ok = true;
+                    for (let i = 0; i < word.length; i++) {
+                        if (grid[row+i][col] !== '' && grid[row+i][col] !== word[i]) { ok = false; break; }
+                    }
+                    if (ok) {
+                        for (let i = 0; i < word.length; i++) grid[row+i][col] = word[i];
+                        placed = true;
+                    }
+                }
+                attempts++;
+            }
+        });
+        // заполняем пустые места случайными буквами
+        const letters = 'abcdefghijklmnopqrstuvwxyz';
+        for (let r = 0; r < size; r++) {
+            for (let c = 0; c < size; c++) {
+                if (grid[r][c] === '') grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
+            }
+        }
+        return grid;
+    }
+
+    let currentCrossGrid = generateFullCrossword();
+    let foundWords = new Array(15).fill(false);
+
+    function renderCross() {
+        const gridDiv = document.getElementById('crossGrid');
+        gridDiv.innerHTML = '';
+        for (let r = 0; r < 15; r++) {
+            for (let c = 0; c < 15; c++) {
+                const cell = document.createElement('div');
+                cell.className = 'cross-cell';
+                cell.dataset.row = r;
+                cell.dataset.col = c;
+                cell.textContent = currentCrossGrid[r][c].toUpperCase();
+                gridDiv.appendChild(cell);
+            }
+        }
+        const bank = document.getElementById('wordBank');
+        bank.innerHTML = '';
+        crossWords.forEach((w, i) => {
+            const token = document.createElement('span');
+            token.className = `word-token ${foundWords[i] ? 'found' : ''}`;
+            token.dataset.index = i;
+            token.textContent = `${w} (${verbs.find(v => v.v1 === w).trans})`;
+            token.addEventListener('click', () => highlightWord(i));
+            bank.appendChild(token);
+        });
+    }
+
+    function highlightWord(idx) {
+        if (foundWords[idx]) return;
+        const word = crossWords[idx];
+        const size = 15;
+        // поиск слова во всех направлениях
+        for (let r = 0; r < size; r++) {
+            for (let c = 0; c <= size - word.length; c++) {
+                let match = true;
+                for (let i = 0; i < word.length; i++) {
+                    if (currentCrossGrid[r][c + i] !== word[i]) { match = false; break; }
+                }
+                if (match) {
+                    // подсветить
+                    for (let i = 0; i < word.length; i++) {
+                        const cell = document.querySelector(`.cross-cell[data-row="${r}"][data-col="${c + i}"]`);
+                        if (cell) cell.classList.add('highlight');
+                    }
+                    foundWords[idx] = true;
+                    document.querySelector(`.word-token[data-index="${idx}"]`).classList.add('found');
+                    return;
+                }
+            }
+        }
+        for (let r = 0; r <= size - word.length; r++) {
+            for (let c = 0; c < size; c++) {
+                let match = true;
+                for (let i = 0; i < word.length; i++) {
+                    if (currentCrossGrid[r + i][c] !== word[i]) { match = false; break; }
+                }
+                if (match) {
+                    for (let i = 0; i < word.length; i++) {
+                        const cell = document.querySelector(`.cross-cell[data-row="${r + i}"][data-col="${c}"]`);
+                        if (cell) cell.classList.add('highlight');
+                    }
+                    foundWords[idx] = true;
+                    document.querySelector(`.word-token[data-index="${idx}"]`).classList.add('found');
+                    return;
+                }
+            }
+        }
+        alert('Слово не найдено на поле (странно)');
+    }
+
+    document.getElementById('crossReset').addEventListener('click', () => {
+        currentCrossGrid = generateFullCrossword();
+        foundWords = new Array(15).fill(false);
+        renderCross();
+    });
+    renderCross();
+
+    // ---------- МЕМОРИ 3 РАУНДА ----------
+    let currentRound = 0; // 0,1,2
+    const roundSize = 10;
+    let memoryCards = [];
+    let memFlipped = [];
+    let memPairs = 0, memMoves = 0, memLock = false;
+
+    function buildMemoryDeck(round) {
+        const start = round * roundSize;
+        const selected = verbs.slice(start, start + roundSize);
+        let deck = [];
+        selected.forEach((v, idx) => {
+            deck.push({ pairId: idx, value: v.v1, type: 'V1', matched: false });
+            deck.push({ pairId: idx, value: v.v2.split('/')[0].trim(), type: 'V2', matched: false });
+        });
+        return deck.sort(() => Math.random() - 0.5).map(c => ({ ...c, flipped: false }));
+    }
+
+    function initMemoryRound() {
+        memoryCards = buildMemoryDeck(currentRound);
+        memFlipped = [];
+        memPairs = 0;
+        memMoves = 0;
+        memLock = false;
+        renderMemory();
+    }
+
+    function renderMemory() {
+        const grid = document.getElementById('memoryGrid');
+        grid.innerHTML = memoryCards.map((c, i) => 
+            `<div class="memory-card ${c.matched ? 'matched' : ''} ${c.flipped ? 'flipped' : ''}" data-index="${i}">${c.flipped || c.matched ? c.value : '❓'}</div>`
+        ).join('');
+        document.getElementById('memoryPairs').innerText = memPairs;
+        document.getElementById('memoryMoves').innerText = memMoves;
+    }
+
+    function handleMemoryClick(e) {
+        const cardDiv = e.target.closest('.memory-card');
+        if (!cardDiv || memLock) return;
+        const idx = cardDiv.dataset.index;
+        const card = memoryCards[idx];
+        if (card.matched || card.flipped) return;
+        card.flipped = true;
+        memFlipped.push(idx);
+        renderMemory();
+        if (memFlipped.length === 2) {
+            memLock = true;
+            memMoves++;
+            const i1 = memFlipped[0], i2 = memFlipped[1];
+            const c1 = memoryCards[i1], c2 = memoryCards[i2];
+            if (c1.pairId === c2.pairId) {
+                c1.matched = true; c2.matched = true; memPairs++;
+                c1.flipped = false; c2.flipped = false;
+                memFlipped = [];
+                memLock = false;
+                renderMemory();
+            } else {
+                setTimeout(() => {
+                    memoryCards[i1].flipped = false;
+                    memoryCards[i2].flipped = false;
+                    memFlipped = [];
+                    memLock = false;
+                    renderMemory();
+                }, 600);
+            }
+        }
+    }
+
+    document.getElementById('memoryGrid').addEventListener('click', handleMemoryClick);
+    document.querySelectorAll('.round-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.round-btn').forEach(b => b.classList.remove('active-round'));
+            btn.classList.add('active-round');
+            currentRound = parseInt(btn.dataset.round);
+            initMemoryRound();
+        });
+    });
+    document.getElementById('memoryResetRound').addEventListener('click', initMemoryRound);
+    initMemoryRound();
+
+    // ---------- ШАРИКИ (убрана подсказка was/were) ----------
+    let balloonIdx = 0;
+    let balloonPoints = 0;
+    const balloonV1Span = document.getElementById('balloonCurrentV1');
+    const balloonField = document.getElementById('balloonField');
+    function spawnBalloons() {
+        const current = verbs[balloonIdx];
+        balloonV1Span.innerText = current.v1;
+        const correctV2 = current.v2.split('/')[0].trim();
+        let options = [{ text: correctV2, correct: true }];
+        while (options.length < 5) {
+            const rand = verbs[Math.floor(Math.random() * verbs.length)].v2.split('/')[0].trim();
+            if (!options.some(o => o.text === rand) && rand !== correctV2) options.push({ text: rand, correct: false });
+        }
+        options = options.sort(() => Math.random() - 0.5);
+        balloonField.innerHTML = options.map(o => 
+            `<div class="balloon" data-correct="${o.correct}">${o.text}</div>`
+        ).join('');
+    }
+    balloonField.addEventListener('click', (e) => {
+        const ball = e.target.closest('.balloon');
+        if (!ball) return;
+        if (ball.dataset.correct === 'true') {
+            ball.classList.add('correct-hit');
+            balloonPoints++;
+            document.getElementById('balloonScore').innerText = `🎯 ${balloonPoints}`;
+            ball.style.pointerEvents = 'none';
+        } else {
+            ball.classList.add('wrong-hit');
+        }
+    });
+    document.getElementById('balloonNextVerb').addEventListener('click', () => {
+        balloonIdx = (balloonIdx + 1) % verbs.length;
+        spawnBalloons();
+    });
+    spawnBalloons();
+
+    // ---------- КАРТОЧКИ (flashcards) ----------
+    let flashIndex = 0;
+    const flashV1 = document.getElementById('flashV1');
+    const flashTrans = document.getElementById('flashTrans');
+    const flashOptions = document.getElementById('flashOptions');
+    function updateFlash() {
+        const v = verbs[flashIndex];
+        flashV1.innerText = v.v1;
+        flashTrans.innerText = v.trans;
+        // формируем 4 варианта: правильный V2 + три случайных
+        const correct = v.v2.split('/')[0].trim();
+        let opts = [correct];
+        while (opts.length < 4) {
+            const rand = verbs[Math.floor(Math.random() * verbs.length)].v2.split('/')[0].trim();
+            if (!opts.includes(rand)) opts.push(rand);
+        }
+        opts = opts.sort(() => Math.random() - 0.5);
+        flashOptions.innerHTML = opts.map(opt => 
+            `<div class="flash-opt" data-value="${opt}" data-correct="${opt === correct}">${opt}</div>`
+        ).join('');
+    }
+    flashOptions.addEventListener('click', (e) => {
+        const opt = e.target.closest('.flash-opt');
+        if (!opt) return;
+        if (opt.dataset.correct === 'true') {
+            opt.classList.add('correct-answer');
+            setTimeout(() => {
+                flashIndex = (flashIndex + 1) % verbs.length;
+                updateFlash();
+            }, 500);
+        } else {
+            alert(`❌ Неверно! Правильно: ${verbs[flashIndex].v2.split('/')[0].trim()}`);
+        }
+    });
+    document.getElementById('flashNext').addEventListener('click', () => {
+        flashIndex = (flashIndex + 1) % verbs.length;
+        updateFlash();
+    });
+    updateFlash();
+
+    // ---------- TABS ----------
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panels = {
+        cross: document.getElementById('cross-panel'),
+        memory: document.getElementById('memory-panel'),
+        balloon: document.getElementById('balloon-panel'),
+        flash: document.getElementById('flash-panel')
+    };
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const p = tab.dataset.panel;
+            Object.values(panels).forEach(pan => pan.classList.remove('active-panel'));
+            panels[p].classList.add('active-panel');
+        });
+    });
+})();
+</script>
+</body>
+</html>
